@@ -6,4 +6,20 @@ let p = document.createElement('p');
 
 recognition.interimResults = true;
 words.appendChild(p);
-recognition.addEventListener('results', event => console.log(event));
+
+recognition.addEventListener('end', recognition.start);
+recognition.addEventListener('result', event => {
+  const transcript = Array.from(event.results)
+    .map(result => result[0])
+    .map(result => result.transcript)
+    .join('');
+
+  p.textContent = transcript;
+
+  if (event.results[0].isFinal) {
+    p = document.createElement('p');
+
+    words.appendChild(p);
+  }
+});
+recognition.start();
